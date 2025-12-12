@@ -1,0 +1,2 @@
+Inside kmeans folder, a folder with the dataset name will be created.
+This folder contains all information related to kmeans model.

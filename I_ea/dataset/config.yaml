@@ -1,0 +1,39 @@
+dataset:
+  name: LJSpeech #  'VCTK', 'LJSpeech'
+  LJSpeech:
+    url: 'https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2'
+    out_file: 'LJSpeech-1.1.tar.bz2'
+    extract_to: 'LJSpeech-1.1'
+    wavs_path: './LJSpeech-1.1/wavs'
+    splits: './LJSpeech_splits'
+  VCTK:
+    url: 'https://datashare.ed.ac.uk/download/DS_10283_3443.zip'
+    out_file: 'VCTK-0.92.zip'
+    extract_to: 'VCTK-0.92'
+    wavs_path : './VCTK-0.92/wavs' 
+    wavs_sr: 22050
+    flacs_path: './VCTK-0.92/VCTK-0.92/wav48_silence_trimmed' # where the wavs exist after extractation
+    txts_path: './VCTK-0.92/VCTK-0.92/txt'
+    splits: './VCTK_splits'
+    all_speakers: False
+    all_texts: False
+    multi_speaker_per_text: False 
+    mel_all_wavs: False # if True, all the wavs in the dataset will be saved for later processing (using kmeans++). If False, only the used wavs in training/validation will be used.
+
+    ratio: 0.95
+    # we will use the record of mic1
+    execlude_speakers: [p315] # execlude form training and validation, for p315: both Text and mic2 files unavailable
+        
+km_model:
+  n_clusters: 100 # 100, 500
+  
+  LJSpeech:
+    feat_dir: './kmeans/LJSpeech/allfeat_np' # contains all mel-specs frames on which kmean will be fitted
+    mel_dir : './kmeans/LJSpeech/mel_feats' # path to save the extracted mel-spec for all wavs
+    km_path : './kmeans/LJSpeech' # km_model will be saved in f'{km_path}/km_model_{n_clusters}/model.km
+
+  VCTK:
+    feat_dir: './kmeans/VCTK/allfeat_np' 
+    mel_dir : './kmeans/VCTK/mel_feats' 
+    km_path : './kmeans/VCTK' 
+

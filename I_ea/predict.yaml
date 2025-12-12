@@ -1,0 +1,60 @@
+training_config:
+  dataset: LJSpeech
+  
+wavs: 
+  mask_lengths: [20, 40, 60, 80, 100, 200, 300, 400]
+  LJSpeech:
+    path: './dataset/LJSpeech-1.1/wavs'
+    validation_txt: './dataset/LJSpeech_splits/validation.txt'
+  VCTK:
+    path: './dataset/VCTK-0.92/wavs'
+    validation_txt: './dataset/VCTK_splits/validation.txt'
+    
+wave:
+  LJSpeech:
+    wave_path: './dataset/LJSpeech-1.1/wavs/LJ035-0125.wav'
+    wave_text: 'The latter indeed hung like millstones round the neck of the unhappy insolvent wretches who found themselves in limbo.'
+    save_pred: './prediction/LJSpeech'
+    path2dict: './results'
+  
+  VCTK:
+    wave_path: './dataset/VCTK-0.92/wavs/p231_039.wav' 
+    wave_text: 'That deal is a joke.'
+    save_pred: './prediction/VCTK'
+    path2dict: './results'
+
+mask:
+  start_pos_in_sec: 1.8 #1.65 #2.95 #1.87 
+  end_pos_in_sec: 2.2 #2.04 #  2.0 #[end-start] should be less than 400ms
+
+device:
+  index:  0 # 'cpu' #1
+  ASR_device: 0 # 'cpu'
+
+hifi_gan:
+  checkpoint_file : './hifi_gan/LJ_V1/generator_v1' # the pretrained hifi-gan
+  #checkpoint_file: './hifi_gan/VCTK_V1/g_00022000' 
+
+hubert_model:
+  type: 'large'
+  LJSpeech:
+    validation_txt: './dataset/LJSpeech_splits/validation.txt' 
+    path2wavs: './dataset/LJSpeech-1.1/wavs'
+    model_checkpoint: './trained_models/save_checkpoint.pt'
+  VCTK:
+    validation_txt: './dataset/VCTK_splits/validation.txt'
+    path2wavs: './dataset/VCTK-0.92/wavs'
+    model_checkpoint: './trained_models/save_checkpoint.pt'
+
+ASR_model:
+  cache_dir: './pretrained_models'
+  model_name: 'openai/whisper-small'
+
+km_model:
+  n_clusters : 100 # 500
+  LJSpeech:
+    path2centroids: './dataset/kmeans/LJSpeech/'
+    km_model_path: './dataset/kmeans/LJSpeech/'
+  VCTK:
+    path2centroids: './dataset/kmeans/VCTK/'
+    km_model_path: './dataset/kmeans/VCTK/'

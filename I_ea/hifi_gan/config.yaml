@@ -1,0 +1,17 @@
+configs:
+  dataset: VCTK # LJSpeech
+  checkpoint_path: './VCTK_V1/' #'./UNIVERSAL_V1_test'
+  save_pred: './predictions'
+  mask_len: 20 # how many frames in the mel-spectrogram to replace with the quantized ones. 20 is equivalent to 400 ms for mel-spec with hop size = 441
+  # chooose mask_len: -1 to fine-tune HiFi-GAN by replacing all mel frames with the quantized ones (the centroids of kmeans model).
+  segment_size: 44288 # this is equivalent to 173 frames for hop size = 256 and 100 frames for hop size 100, then for mask_len = 20, we replace one-fifth of the mel frames with the quantized ones.
+  # to get the number of frames in mask_len scale: choose k and compute segement_size. divide k by (441/256) will give the total number of frames from which mask_len frames will be replaced by centroids.
+
+device:
+  gpu_index: 1 # 1, 'cpu'
+
+km_model:
+  LJSpeech:
+    km_path: '../dataset/kmeans/LJSpeech/km_model_100/model_80_100.km'
+  VCTK:
+    km_path: '../dataset/kmeans/VCTK/km_model_100/model_80_100.km'

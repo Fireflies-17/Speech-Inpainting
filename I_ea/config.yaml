@@ -1,0 +1,76 @@
+training_config:
+  dataset: LJSpeech # VCTK, LJSpeech
+  seed: 1234
+  gpu_index: 0
+  train_batch_size: 16
+  valid_batch_size: 2
+  min_mask_length: 40
+  max_mask_length: 400 # in ms, multiple of 20
+  epochs: 100
+  loss_function: 'cos_sim' 
+  max_wav_length: 5.0 #10.1 # in seconds
+
+model:
+  codebook_dim: 80 # fixed to match the HiFi-GAN input
+  load_pretrained: true # if true, load the transformer encoder + CNN prenet from HugginFace, otherwise (i.e. false, load only the CNN prenet (and initialize randomly the transformer layer)
+  type: 'large' # either 'large or base'
+  train_encoder: True # whether to train the encoder along with the final fc layers.
+
+optimizer:
+  type: 'adamW'
+  base_lr: 1e-4
+  fc_lr: 1e-4
+  betas: (0.9, 0.98)
+  eps: 1e-6
+  weight-decay: 1e-2
+  clip-norm: 10
+  warmup: 32000
+
+training_dataset:
+  LJSpeech:
+    path2splits : './dataset/LJSpeech_splits/training.txt' 
+    path2pt: './dataset/LJSpeech-1.1/pt_16khz/training' # the preprocessed wavs are saved as tensors to speed up training
+    path2centroids: './dataset/kmeans/LJSpeech'
+  VCTK:
+    path2splits : './dataset/VCTK_splits/training.txt' 
+    path2pt: './dataset/VCTK-0.92/pt_16khz/training'
+    path2centroids: './dataset/kmeans/VCTK'
+
+validation_dataset:
+  LJSpeech:
+    path2splits : './dataset/LJSpeech_splits/validation.txt'
+    path2pt: './dataset/LJSpeech-1.1/pt_16khz/validation' 
+    path2centroids: './dataset/kmeans/LJSpeech'
+  VCTK:
+    path2splits : './dataset/VCTK_splits/validation.txt'
+    path2pt: './dataset/VCTK-0.92/pt_16khz/validation' 
+    path2centroids: './dataset/kmeans/VCTK'
+
+wave:
+  LJSpeech:
+    wave_path: './dataset/LJSpeech-1.1/wavs/LJ050-0271.wav' #  
+    save_pred: 'prediction' # folder to save the inpainted wave in
+    path2wavs: './dataset/LJSpeech-1.1/wavs'
+  VCTK:
+    wave_path: './dataset/VCTK-0.92/wavs/p225_035.wav' 
+    save_pred: 'prediction' 
+    path2wavs: './dataset/VCTK-0.92/wavs' 
+
+hifi_gan:
+  checkpoint_file : './hifi_gan/VCTK_V1/generator_v1' # the pretrained hifi-gan
+
+hubert_model:
+  save_checkpoint: './trained_models/save_checkpoint.pt'
+  model_checkpoint : './trained_models/model_checkpoint.pt'
+  save_checkpoint_training: './trained_models/save_last_checkpoint.pt'
+
+km_model:
+  n_clusters : 100
+  LJSpeech:
+    km_model_path: './dataset/kmeans/LJSpeech'
+  VCTK:
+    km_model_path: './dataset/kmeans/VCTK'
+
+ASR_model:
+  cache_dir: './pretrained_models'
+  model_name: 'openai/whisper-small'
